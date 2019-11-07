@@ -48,8 +48,8 @@ void	create_file_s(t_diasm *diasm)
 
 void	printf_bit_hex(unsigned char *arr)
 {
-	unsigned char c;
-	int i;
+	unsigned char	c;
+	int				i;
 
 	i = -1;
 	while (++i != 4)
@@ -140,41 +140,231 @@ unsigned short	move_to_ushort(unsigned char *buf)
 	return (rez);
 }
 
+unsigned char read_one_byte(t_diasm *diasm)
+{
+	unsigned int	one_byte;
+
+	if (read(diasm->fd_cor, &one_byte, 1) == -1)
+		sys_err("Error read files.\n");
+	//ft_printf("Code arg = {%#02x}\n", code_arg);
+	return (one_byte);
+}
+
+unsigned int read_four_byte(t_diasm *diasm)
+{
+	unsigned int	four_byte;
+	unsigned char	buf[4];
+
+	if (read(diasm->fd_cor, buf, 4) == -1)
+		sys_err("Error read files.\n");
+	four_byte = move_to_uint(buf);
+	return (four_byte);
+}
+
+unsigned short read_two_byte(t_diasm *diasm)
+{
+	unsigned short	tow_byte;
+	unsigned char	buf[2];
+
+	if (read(diasm->fd_cor, buf, 2) == -1)
+		sys_err("Error read files.\n");
+	tow_byte = move_to_ushort(buf);
+	return (tow_byte);
+	
+}
+
+void	write_registr(t_diasm *diasm, int flag)
+{
+	unsigned char	reg;
+	char			*str_num;
+	
+	reg = read_one_byte(diasm);
+	str_num = ft_itoa(reg);
+	ft_putchar_fd('r', diasm->fd_s);
+	ft_putstr_fd(str_num, diasm->fd_s);
+	ft_strdel(&str_num);
+	flag == 1 ? ft_putstr_fd(", ", diasm->fd_s) : ft_putstr_fd("\n", diasm->fd_s);
+}
+
+void	write_direct(t_diasm *diasm, int flag)
+{
+	unsigned int	dir;
+	char			*str_num;
+	
+	dir = read_four_byte(diasm);
+	str_num = ft_itoa((int)dir);
+	ft_putchar_fd('%', diasm->fd_s);
+	ft_putstr_fd(str_num, diasm->fd_s);
+	ft_strdel(&str_num);
+	flag == 1 ? ft_putstr_fd(", ", diasm->fd_s) : ft_putstr_fd("\n", diasm->fd_s);
+}
+
+void	write_direct_two_byte(t_diasm *diasm, int flag)
+{
+	unsigned short	dir;
+	char			*str_num;
+	
+	dir = read_two_byte(diasm);
+	str_num = ft_itoa((short)dir);
+	ft_putchar_fd('%', diasm->fd_s);
+	ft_putstr_fd(str_num, diasm->fd_s);
+	ft_strdel(&str_num);
+	flag == 1 ? ft_putstr_fd(", ", diasm->fd_s) : ft_putstr_fd("\n", diasm->fd_s);
+}
+
+void	write_indirect(t_diasm *diasm, int flag)
+{
+	unsigned short	ind;
+	char			*str_num;
+	
+	ind = read_two_byte(diasm);
+	str_num = ft_itoa((short)ind);
+	ft_putstr_fd(str_num, diasm->fd_s);
+	ft_strdel(&str_num);
+	flag == 1 ? ft_putstr_fd(", ", diasm->fd_s) : ft_putstr_fd("\n", diasm->fd_s);
+}
+
 void	op_live(t_diasm *diasm)
 {
-	unsigned char	dir[4];
-	unsigned int	idir;
+	unsigned int	dir;
 	char			*str_num;
 
-	idir = 0;
-	if (read(diasm->fd_cor, dir, 4) == -1)
-		sys_err("Error read files.\n");
 	ft_putstr_fd("\tlive %", diasm->fd_s);
-	idir = move_to_uint(dir);
-	str_num = ft_itoa((int)idir);
+	dir = read_four_byte(diasm);
+	str_num = ft_itoa((int)dir);
 	ft_putendl_fd(str_num, diasm->fd_s);
 	ft_strdel(&str_num);
-	//ft_putstr_fd(comment, diasm->fd_s);
-	//idir = (unsigned int*)(&dir[0]);
-	//ft_printf("idir = {%04x}\n", idir);
-	//printf_bit_hex(dir);
 }
 
 void	op_zjmp_fork_lfork(t_diasm *diasm, const char *op_name)
 {
-	unsigned char	dir[2];
-	unsigned short	ushort;
+	unsigned short	dir;
 	char			*str_num;
 
 	ft_putendl(op_name);
-	ushort = 0;
-	if (read(diasm->fd_cor, dir, 2) == -1)
-		sys_err("Error read files.\n");
 	ft_putstr_fd(op_name, diasm->fd_s);
-	ushort = move_to_ushort(dir);
-	str_num = ft_itoa((short)ushort);
+	dir = read_two_byte(diasm);
+	str_num = ft_itoa((short)dir);
 	ft_putendl_fd(str_num, diasm->fd_s);
 	ft_strdel(&str_num);
+}
+
+void	op_add_sub(t_diasm *diasm, char *op_name)
+{
+	unsigned char code_arg;
+
+	code_arg = read_one_byte(diasm);
+	ft_putstr_fd(op_name, diasm->fd_s);
+	if (code_arg== 0x54)
+	{
+		write_registr(diasm, 1);
+		write_registr(diasm, 1);
+		write_registr(diasm, 0);
+	}
+
+}
+
+void	op_aff(t_diasm *diasm)
+{
+	unsigned char code_arg;
+
+	ft_putstr_fd("\taff ", diasm->fd_s);
+	code_arg = read_one_byte(diasm);
+	if (code_arg == 0x40)
+		write_registr(diasm, 0);
+
+}
+
+void	op_and_or_xor(t_diasm *diasm, char *op_name)
+{
+	unsigned char code_arg;
+
+	ft_putstr_fd(op_name, diasm->fd_s);
+	code_arg = read_one_byte(diasm);
+	if ((code_arg & FIR_ARG) == 0x40)
+		write_registr(diasm, 1);
+	else if ((code_arg & FIR_ARG) == 0x80)
+		write_direct(diasm, 1);
+	else if ((code_arg & FIR_ARG) == 0xc0)
+		write_indirect(diasm, 1);
+	if ((code_arg & SEC_ARG) == 0x10)
+		write_registr(diasm, 1);
+	else if ((code_arg & SEC_ARG) == 0x20)
+		write_direct(diasm, 1);
+	else if ((code_arg & SEC_ARG) == 0x30)
+		write_indirect(diasm, 1);
+	if ((code_arg & THI_ARG) == 0x04)
+		write_registr(diasm, 0);
+}
+
+void	op_ls_lld(t_diasm *diasm, char *op_name)
+{
+	unsigned char code_arg;
+
+	ft_putstr_fd(op_name, diasm->fd_s);
+	code_arg = read_one_byte(diasm);
+	if ((code_arg & FIR_ARG) == 0x80)
+		write_direct(diasm, 1);
+	else if ((code_arg & FIR_ARG) == 0xc0)
+		write_indirect(diasm, 1);
+	if ((code_arg & SEC_ARG) == 0x10)
+		write_registr(diasm, 0);
+}
+
+void	op_st(t_diasm *diasm)
+{
+	unsigned char code_arg;
+
+	ft_putstr_fd("\tst ", diasm->fd_s);
+	code_arg = read_one_byte(diasm);
+	if ((code_arg & FIR_ARG) == 0x40)
+		write_registr(diasm, 1);
+	if ((code_arg & SEC_ARG) == 0x10)
+		write_registr(diasm, 0);
+	else if ((code_arg & SEC_ARG) == 0x30)
+		write_indirect(diasm, 0);
+}
+
+void	op_sti(t_diasm *diasm)
+{
+	unsigned char code_arg;
+
+	ft_putstr_fd("\tsti ", diasm->fd_s);
+	code_arg = read_one_byte(diasm);
+	if ((code_arg & FIR_ARG) == 0x40)
+		write_registr(diasm, 1);
+
+	if ((code_arg & SEC_ARG) == 0x10)
+		write_registr(diasm, 1);
+	else if ((code_arg & SEC_ARG) == 0x20)
+		write_direct_two_byte(diasm, 1);
+	else if ((code_arg & SEC_ARG) == 0x30)
+		write_indirect(diasm, 1);
+
+	if ((code_arg & THI_ARG) == 0x04)
+		write_registr(diasm, 0);
+	else if ((code_arg & THI_ARG) == 0x08)
+		write_direct_two_byte(diasm, 0);
+}
+
+void	op_ldi_lldi(t_diasm *diasm, char *op_name)
+{
+	unsigned char code_arg;
+
+	ft_putstr_fd(op_name, diasm->fd_s);
+	code_arg = read_one_byte(diasm);
+	if ((code_arg & FIR_ARG) == 0x40)
+		write_registr(diasm, 1);
+	else if ((code_arg & FIR_ARG) == 0x80)
+		write_direct_two_byte(diasm, 1);
+	else if ((code_arg & FIR_ARG) == 0xc0)
+		write_indirect(diasm, 1);
+	if ((code_arg & SEC_ARG) == 0x10)
+		write_registr(diasm, 1);
+	else if ((code_arg & SEC_ARG) == 0x20)
+		write_direct_two_byte(diasm, 1);
+	if ((code_arg & THI_ARG) == 0x04)
+		write_registr(diasm, 0);
 }
 
 void	woking_operation(t_diasm *diasm, unsigned char op)
@@ -187,7 +377,30 @@ void	woking_operation(t_diasm *diasm, unsigned char op)
 		op_zjmp_fork_lfork(diasm, "\tfork %");
 	else if (op == 0x0f)
 		op_zjmp_fork_lfork(diasm, "\tlfork %");
-
+	else if (op == 0x04)
+		op_add_sub(diasm, "\tadd ");
+	else if (op == 0x05)
+		op_add_sub(diasm, "\tsub ");
+	else if (op == 0x10)
+		op_aff(diasm);
+	else if (op == 0x06)
+		op_and_or_xor(diasm, "\tand ");
+	else if (op == 0x07)
+		op_and_or_xor(diasm, "\tor ");
+	else if (op == 0x08)
+		op_and_or_xor(diasm, "\txor ");
+	else if (op == 0x02)
+		op_ls_lld(diasm, "\tld ");
+	else if (op == 0x0d)
+		op_ls_lld(diasm, "\tlld ");
+	else if (op == 0x03)
+		op_st(diasm);
+	else if (op == 0x0b)
+		op_sti(diasm);
+	else if (op == 0x0a)
+		op_ldi_lldi(diasm, "\tldi ");
+	else if (op == 0x0e)
+		op_ldi_lldi(diasm, "\tlidi ");
 }
 
 void	write_instruction(t_diasm *diasm)
