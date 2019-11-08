@@ -96,7 +96,7 @@ void	write_comment(t_diasm *diasm)
 	//ft_printf("comment = {%s}\n", comment);
 	ft_putstr_fd(".comment \"", diasm->fd_s);
 	ft_putstr_fd(comment, diasm->fd_s);
-	ft_putendl_fd("\"", diasm->fd_s);
+	ft_putendl_fd("\"\n", diasm->fd_s);
 
 }
 void	write_name_comment(t_diasm *diasm)
@@ -333,14 +333,12 @@ void	op_sti(t_diasm *diasm)
 	code_arg = read_one_byte(diasm);
 	if ((code_arg & FIR_ARG) == 0x40)
 		write_registr(diasm, 1);
-
 	if ((code_arg & SEC_ARG) == 0x10)
 		write_registr(diasm, 1);
 	else if ((code_arg & SEC_ARG) == 0x20)
 		write_direct_two_byte(diasm, 1);
 	else if ((code_arg & SEC_ARG) == 0x30)
 		write_indirect(diasm, 1);
-
 	if ((code_arg & THI_ARG) == 0x04)
 		write_registr(diasm, 0);
 	else if ((code_arg & THI_ARG) == 0x08)
