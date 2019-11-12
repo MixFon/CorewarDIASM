@@ -61,6 +61,7 @@ void	write_instruction(t_diasm *diasm)
 
 void	close_file(t_diasm *diasm)
 {
+	ft_putendl("Done!");
 	ft_strdel(&diasm->name_cor);
 	ft_strdel(&diasm->name_s);
 	close(diasm->fd_cor);

@@ -1,6 +1,6 @@
 NAME = diasm
 
-SRC =	main.c\
+FILEC =	main.c\
 		op_live_zjmp_fork_fork_add_sub_aff_and_or_xor.c\
 		op_ls_lld_st_sti_ldi_lldi.c\
 		print_bit_hex.c\
@@ -8,11 +8,11 @@ SRC =	main.c\
 		write_name_comment.c\
 		write_to_file.c
 
-OBJ = $(addprefix $(OBJDIR), $(SRC:.c=.o))
+DIRSRC = ./source/
 
-FLAGS = -Wextra -Werror -Wall -g
+OBJ = $(FILEC:.c=.o)
 
-HFILES = -I ./libft -I ./include
+SRC = $(addprefix $(DIRSRC), $(FILEC))
 
 all: $(NAME)
 
