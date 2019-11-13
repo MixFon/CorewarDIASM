@@ -9,6 +9,7 @@ FILEC =	main.c\
 		write_to_file.c
 
 DIRSRC = ./source/
+FLAGS = -Wall -Wextra -Werror
 
 OBJ = $(FILEC:.c=.o)
 
