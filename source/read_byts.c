@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   read_byts.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/13 13:02:45 by widraugr          #+#    #+#             */
+/*   Updated: 2019/11/13 13:03:59 by widraugr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/diasm.h"
 
@@ -8,7 +19,7 @@ unsigned int	move_to_uint(unsigned char *buf)
 
 	rez = 0;
 	i = -1;
-	while(++i < 4)
+	while (++i < 4)
 	{
 		rez = rez << 8;
 		rez = rez | (unsigned char)buf[i];
@@ -23,7 +34,7 @@ unsigned short	move_to_ushort(unsigned char *buf)
 
 	rez = 0;
 	i = -1;
-	while(++i < 2)
+	while (++i < 2)
 	{
 		rez = rez << 8;
 		rez = rez | (unsigned char)buf[i];
@@ -31,7 +42,7 @@ unsigned short	move_to_ushort(unsigned char *buf)
 	return (rez);
 }
 
-unsigned char read_one_byte(t_diasm *diasm)
+unsigned char	read_one_byte(t_diasm *diasm)
 {
 	unsigned int	one_byte;
 
@@ -40,7 +51,7 @@ unsigned char read_one_byte(t_diasm *diasm)
 	return (one_byte);
 }
 
-unsigned int read_four_byte(t_diasm *diasm)
+unsigned int	read_four_byte(t_diasm *diasm)
 {
 	unsigned int	four_byte;
 	unsigned char	buf[4];
@@ -51,7 +62,7 @@ unsigned int read_four_byte(t_diasm *diasm)
 	return (four_byte);
 }
 
-unsigned short read_two_byte(t_diasm *diasm)
+unsigned short	read_two_byte(t_diasm *diasm)
 {
 	unsigned short	tow_byte;
 	unsigned char	buf[2];
@@ -60,5 +71,4 @@ unsigned short read_two_byte(t_diasm *diasm)
 		sys_err("Error read files.\n");
 	tow_byte = move_to_ushort(buf);
 	return (tow_byte);
-	
 }

@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_bit_hex.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/13 13:02:02 by widraugr          #+#    #+#             */
+/*   Updated: 2019/11/13 13:02:38 by widraugr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/diasm.h"
 
@@ -11,11 +22,11 @@ void	init(t_diasm *diasm)
 void	open_file_cor(t_diasm *diasm, char *name)
 {
 	char *tmp;
-	
+
 	if ((tmp = ft_strstr(name, ".cor")) && (name - tmp) != 0
 			&& ft_strlen(tmp) == 4)
 	{
-		if(!(diasm->name_cor = ft_strdup(name)))
+		if (!(diasm->name_cor = ft_strdup(name)))
 			sys_err("Error malloc.");
 		if ((diasm->fd_cor = open(name, O_RDONLY)) == -1)
 			sys_err("File not opened.\n");

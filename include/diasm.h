@@ -1,6 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   diasm.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/13 13:06:35 by widraugr          #+#    #+#             */
+/*   Updated: 2019/11/13 13:08:22 by widraugr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "../libft/libft.h"
-#include "op.h"
+#ifndef DIASM_H
+# define DIASM_H
+
+# include "../libft/libft.h"
+# include "op.h"
 
 # define FIR_ARG 0xc0
 # define SEC_ARG 0x30
@@ -66,3 +80,4 @@ void			woking_operation_01_08(t_diasm *diasm, unsigned char op);
 void			write_instruction(t_diasm *diasm);
 void			close_file(t_diasm *diasm);
 int				main(int ac, char **av);
+#endif

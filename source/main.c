@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/13 12:58:59 by widraugr          #+#    #+#             */
+/*   Updated: 2019/11/13 13:01:00 by widraugr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/diasm.h"
 
@@ -47,14 +58,14 @@ void	write_instruction(t_diasm *diasm)
 {
 	int				count;
 	unsigned char	op;
-	
-	count = 1;	
+
+	count = 1;
 	while (1)
 	{
 		if ((count = read(diasm->fd_cor, &op, 1)) == -1)
 			sys_err("Error read files.\n");
 		if (!count)
-			break;
+			break ;
 		woking_operation_01_08(diasm, op);
 	}
 }
@@ -71,7 +82,7 @@ void	close_file(t_diasm *diasm)
 int		main(int ac, char **av)
 {
 	t_diasm diasm;
-	
+
 	if (ac != 2)
 		sys_err("Error!\nUse ./asm namefile.cor\n");
 	init(&diasm);

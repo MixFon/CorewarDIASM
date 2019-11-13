@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   op_live_zjmp_fork_fork_add_sub_aff_and_or          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/13 13:01:04 by widraugr          #+#    #+#             */
+/*   Updated: 2019/11/13 13:01:31 by widraugr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/diasm.h"
 
@@ -31,7 +42,7 @@ void	op_add_sub(t_diasm *diasm, char *op_name)
 
 	code_arg = read_one_byte(diasm);
 	ft_putstr_fd(op_name, diasm->fd_s);
-	if (code_arg== 0x54)
+	if (code_arg == 0x54)
 	{
 		write_registr(diasm, 1);
 		write_registr(diasm, 1);
