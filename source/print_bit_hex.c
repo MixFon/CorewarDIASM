@@ -54,12 +54,3 @@ void	create_file_s(t_diasm *diasm)
 					S_IREAD | S_IWRITE)))
 		sys_err("Error create file.\n");
 }
-
-void	printf_bit_hex(unsigned char *arr)
-{
-	int				i;
-
-	i = -1;
-	while (++i != 4)
-		ft_printf("%02x ", (unsigned char)arr[i]);
-}

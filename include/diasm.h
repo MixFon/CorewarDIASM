@@ -13,8 +13,10 @@
 #ifndef DIASM_H
 # define DIASM_H
 
-# include "../libft/libft.h"
 # include "op.h"
+# include "unistd.h"
+# include "../minilibft/libft.h"
+# include <fcntl.h>
 
 # define FIR_ARG 0xc0
 # define SEC_ARG 0x30
@@ -34,7 +36,6 @@ void			init(t_diasm *diasm);
 void			open_file_cor(t_diasm *diasm, char *name);
 char			*dot_s(char *name);
 void			create_file_s(t_diasm *diasm);
-void			printf_bit_hex(unsigned char *arr);
 /*
 ** File write_name_comment.c
 */
@@ -80,4 +81,5 @@ void			woking_operation_01_08(t_diasm *diasm, unsigned char op);
 void			write_instruction(t_diasm *diasm);
 void			close_file(t_diasm *diasm);
 int				main(int ac, char **av);
+
 #endif
